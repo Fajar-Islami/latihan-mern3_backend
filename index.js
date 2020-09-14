@@ -30,7 +30,8 @@ const productRoutes = require("./src/routes/products");
 
 // Membuat spesfiik router
 // Klo / maka dia membaca productRoutes
-app.use("/", productRoutes);
+// app.use("/", productRoutes);
+app.use("/v1/customer", productRoutes);
 
 // berjalan di port 4000
 app.listen(4000);

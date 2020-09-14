@@ -1,6 +1,6 @@
 exports.createProduct = (req, res, next) => {
 	res.json({
-		message: "Create Product Success",
+		message: "Create Product Success!!",
 		data: {
 			id: 1,
 			name: "Sari gandum",
