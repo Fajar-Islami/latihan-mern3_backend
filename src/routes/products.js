@@ -7,10 +7,10 @@ const productsController = require("../controllers/products");
 
 // Membuat endpoint
 
-// Create -> POST
+// Create -> POST : localhost:4000/v1/customer/product
 router.post("/product", productsController.createProduct);
 
-// Read
+// Read -> GET : localhost:4000/v1/customer/products
 router.get("/products", productsController.getAllProducts);
 
 // router.put("/products", (req, res, next) => {

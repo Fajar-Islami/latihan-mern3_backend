@@ -28,6 +28,19 @@ const router = express.Router();
 // Memangggil router
 const productRoutes = require("./src/routes/products");
 
+// Penambahan CORS
+app.use("/price", (req, res, next) => {
+	// Izin akses origin/CORS darimana pun
+	res.setHeader("Access-Controll-Allow-Origin", "*");
+
+	// Method yang diizinkan
+	res.setHeader("Access-Controll-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+
+	// Header yang boleh dikirim, Content-Type(untuk JSON),Authorization (Pengiriman Token)
+	res.setHeader("Access-Controll-Allow-Headers", "Content-Type,Authorization");
+	next();
+});
+
 // Membuat spesfiik router
 // Klo / maka dia membaca productRoutes
 // app.use("/", productRoutes);
