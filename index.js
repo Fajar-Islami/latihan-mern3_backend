@@ -2,6 +2,7 @@
 
 // Menggunakan import dari nodejs
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
 // Membuat router
 const router = express.Router();
@@ -27,6 +28,10 @@ const router = express.Router();
 
 // Memangggil router
 const productRoutes = require("./src/routes/products");
+
+// Menambahkan middleware
+// .json karena yang diterima typenya json
+app.use(bodyParser.json());
 
 // Penambahan CORS
 app.use("/price", (req, res, next) => {
