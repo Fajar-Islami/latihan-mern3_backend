@@ -27,7 +27,9 @@ const router = express.Router();
 // });
 
 // Memangggil router
-const productRoutes = require("./src/routes/products");
+// const productRoutes = require("./src/routes/products");
+const authRoutes = require("./src/routes/auth");
+const blogRoutes = require("./src/routes/blog");
 
 // Menambahkan middleware
 // .json karena yang diterima typenya json
@@ -46,10 +48,13 @@ app.use("/price", (req, res, next) => {
 	next();
 });
 
+// // Membuat endpoint
 // Membuat spesfiik router
 // Klo / maka dia membaca productRoutes
 // app.use("/", productRoutes);
-app.use("/v1/customer", productRoutes);
+// app.use("/v1/customer", productRoutes);
+app.use("/v1/auth", authRoutes);
+app.use("/v1/blog", blogRoutes);
 
 // berjalan di port 4000
 app.listen(4000);
