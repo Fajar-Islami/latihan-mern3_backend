@@ -37,15 +37,15 @@ app.use(bodyParser.json());
 
 // Penambahan CORS
 app.use("/price", (req, res, next) => {
-	// Izin akses origin/CORS darimana pun
-	res.setHeader("Access-Controll-Allow-Origin", "*");
+  // Izin akses origin/CORS darimana pun
+  res.setHeader("Access-Controll-Allow-Origin", "*");
 
-	// Method yang diizinkan
-	res.setHeader("Access-Controll-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  // Method yang diizinkan
+  res.setHeader("Access-Controll-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
 
-	// Header yang boleh dikirim, Content-Type(untuk JSON),Authorization (Pengiriman Token)
-	res.setHeader("Access-Controll-Allow-Headers", "Content-Type,Authorization");
-	next();
+  // Header yang boleh dikirim, Content-Type(untuk JSON),Authorization (Pengiriman Token)
+  res.setHeader("Access-Controll-Allow-Headers", "Content-Type,Authorization");
+  next();
 });
 
 // // Membuat endpoint
@@ -55,6 +55,15 @@ app.use("/price", (req, res, next) => {
 // app.use("/v1/customer", productRoutes);
 app.use("/v1/auth", authRoutes);
 app.use("/v1/blog", blogRoutes);
+
+// Middleware
+app.use((error, req, res, next) => {
+  const status = error.errorStatus || 500; //default 500
+  const message = error.message;
+  const data = error.data;
+
+  res.status(status).json({ message: message, data: data }); // Error global
+});
 
 // berjalan di port 4000
 app.listen(4000);
