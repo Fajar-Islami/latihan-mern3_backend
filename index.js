@@ -3,6 +3,8 @@
 // Menggunakan import dari nodejs
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+
 const app = express();
 // Membuat router
 const router = express.Router();
@@ -65,5 +67,13 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data }); // Error global
 });
 
-// berjalan di port 4000
-app.listen(4000);
+mongoose
+  .connect("mongodb+srv://fajar:5LMRpn8q5bwrTEn1@cluster0.z8rnr.mongodb.net/<dbname>?retryWrites=true&w=majority")
+  // kalau koneksi berhasil, menjalankan server
+  .then(() => {
+    // berjalan di port 4000
+    app.listen(4000, () => console.log("Koneksi sukses"));
+
+    // klo gagal
+  })
+  .catch((err) => console.log(err));
