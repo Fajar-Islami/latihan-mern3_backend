@@ -16,7 +16,7 @@ router.post(
 // title nya minimal 5 huruf
 // body nya minimal 5 huruf
 
-router.get('/posts', blogController.getAllBlogPost);
+router.get('/posts', blogController.getAllBlogPost); // 1 Page panggil 5 data
 router.get('/post/:postId', blogController.getBlogPostById);
 router.put(
   '/post/:postId',
@@ -26,5 +26,7 @@ router.put(
   ],
   blogController.UpdateBlogPost,
 );
+
+router.delete('/post/:postId', blogController.deleteBlogPost);
 
 module.exports = router;

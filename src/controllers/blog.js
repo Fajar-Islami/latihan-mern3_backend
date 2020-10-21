@@ -1,5 +1,7 @@
 const { validationResult } = require('express-validator');
+const path = require('path');
 const BlogPost = require('../models/blog');
+const fs = require('fs');
 
 exports.createBlogPost = (req, res, next) => {
   const errors = validationResult(req);
@@ -58,17 +60,47 @@ exports.createBlogPost = (req, res, next) => {
 };
 
 exports.getAllBlogPost = (req, res, next) => {
-  // find() == Memanggil seluruh data
+  const currentPage = req.query.page || 1; // memanggil query page defaultnya 1
+  const perPage = req.query.perPage || 5; // memanggil query perPage defaultnya 5
+  let totalItems; // Total data jumlahnya 0 diubah dibawah
+
+  // countDocuments() = menghitung jumlah data
   BlogPost.find()
+    .countDocuments()
+    .then((count) => {
+      totalItems = count;
+      return (
+        BlogPost.find()
+          // skip() == jumlah data yang dilewati
+          .skip((parseInt(currentPage) - 1) * parseInt(perPage))
+          // limit() == jumlah data yang ditampilkan
+          .limit(parseInt(perPage))
+      );
+    })
     .then((result) => {
       res.status(200).json({
         message: 'Data blog post berhasil dipanggil',
         data: result,
+        total_Data: totalItems, // Informasi total data
+        per_Page: parseInt(perPage), // Informasi data perpage
+        current_Page: parseInt(currentPage), // Informasi page keberapa
       });
     })
     .catch((err) => {
-      next(err); //Mengirim error ke index.js
+      next(err);
     });
+
+  // // find() == Memanggil seluruh data
+  // BlogPost.find()
+  //   .then((result) => {
+  //     res.status(200).json({
+  //       message: 'Data blog post berhasil dipanggil',
+  //       data: result,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     next(err); //Mengirim error ke index.js
+  //   });
 };
 
 exports.getBlogPostById = (req, res, next) => {
@@ -142,4 +174,44 @@ exports.UpdateBlogPost = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.deleteBlogPost = (req, res, next) => {
+  const postId = req.params.postId;
+
+  // Mengecek postingan ada
+  BlogPost.findById(postId)
+    .then((post) => {
+      if (!post) {
+        const error = new Error('Blog Post tidak ditemukan/salah');
+        error.errorStatus = 404;
+        throw error;
+      }
+
+      // Hapus image
+      removeImage(post.image);
+      // Hapus post
+      return BlogPost.findByIdAndRemove(post.id);
+    })
+    .then((result) => {
+      res.status(200).json({
+        message: 'Delete berhasil',
+        data: result,
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const removeImage = (filePath) => {
+  // console.log('filePath :', filePath);
+  // console.log('dir name', __dirname);
+  // __dirname = C:\Users\Fajar Islami\Documents\Belajar MERN\Latihan 3 (Prawito H)\mernAPI\src\controllers
+
+  filePath = path.join(__dirname, '../..', filePath);
+  // C:\Users\Fajar Islami\Documents\Belajar MERN\Latihan 3 (Prawito H)\mernAPI\images\file-image.png
+
+  // Cara remove image
+  fs.unlink(filePath, (err) => console.log(err));
 };
