@@ -1,10 +1,7 @@
 const { validationResult } = require("express-validator");
+const BlogPost = require("../models/blog");
 
 exports.createBlogPost = (req, res, next) => {
-  const title = req.body.title;
-  // const image = req.body.image
-  const body = req.body.body;
-
   const errors = validationResult(req);
 
   // Cek apakah req error / validasi
@@ -22,21 +19,40 @@ exports.createBlogPost = (req, res, next) => {
     // });
   }
 
-  const result = {
-    message: "Create Blog Post Success",
-    data: {
-      post_id: 1,
-      title: "Title Blog",
-      image: "imagefile.png",
-      body: "Lorem Ipsum is simply dummy",
-      create_at: "12/06/2020",
-      author: {
-        uid: 1,
-        name: "Testing",
-      },
-    },
-  };
+  // KLo gambar/file tidak dikirim
+  if (!req.file) {
+    const err = new Error("Image harus diupload");
+    err.errorStatus = 422;
+    throw err;
+  }
 
-  // status 201 = berhasil di create
-  res.status(201).json(result);
+  const title = req.body.title;
+  const image = req.file.path; //path folder image
+  const body = req.body.body;
+
+  // Add
+  const Posting = new BlogPost({
+    title: title,
+    body: body,
+    image: image,
+    author: {
+      uid: 1,
+      name: "Fajar Islami",
+    },
+  });
+
+  // Menyimpan ke database
+  Posting.save()
+    // KLo sukses
+    .then((result) => {
+      // status 201 = berhasil di create
+      res.status(201).json({
+        message: "Create Blog Post Success",
+        data: result,
+      });
+    })
+    // Klo error
+    .catch((err) => {
+      console.log("err:", err);
+    });
 };

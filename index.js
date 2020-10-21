@@ -1,9 +1,10 @@
 // Membuat server dengan express
 
 // Menggunakan import dari nodejs
-const express = require("express");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const multer = require('multer');
 
 const app = express();
 // Membuat router
@@ -30,23 +31,45 @@ const router = express.Router();
 
 // Memangggil router
 // const productRoutes = require("./src/routes/products");
-const authRoutes = require("./src/routes/auth");
-const blogRoutes = require("./src/routes/blog");
+const authRoutes = require('./src/routes/auth');
+const blogRoutes = require('./src/routes/blog');
+
+// Untuk Penyimpanan File
+const fileStorage = multer.diskStorage({
+  // Lokasi
+  destination: (req, file, cb) => {
+    cb(null, 'images'); //Tidak ada error, images == tempat penyimpanan folder
+  },
+  // Format penamaan file
+  filename: (req, file, cb) => {
+    cb(null, new Date().getTime() + '-' + file.originalname);
+  },
+});
+
+// Upload Gambar
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+    cb(null, true); //Terima file nya
+  } else {
+    cb(null, false); // File tidak sesusai
+  }
+};
 
 // Menambahkan middleware
 // .json karena yang diterima typenya json
 app.use(bodyParser.json());
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 
 // Penambahan CORS
-app.use("/price", (req, res, next) => {
+app.use('/price', (req, res, next) => {
   // Izin akses origin/CORS darimana pun
-  res.setHeader("Access-Controll-Allow-Origin", "*");
+  res.setHeader('Access-Controll-Allow-Origin', '*');
 
   // Method yang diizinkan
-  res.setHeader("Access-Controll-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.setHeader('Access-Controll-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
 
   // Header yang boleh dikirim, Content-Type(untuk JSON),Authorization (Pengiriman Token)
-  res.setHeader("Access-Controll-Allow-Headers", "Content-Type,Authorization");
+  res.setHeader('Access-Controll-Allow-Headers', 'Content-Type,Authorization');
   next();
 });
 
@@ -55,8 +78,8 @@ app.use("/price", (req, res, next) => {
 // Klo / maka dia membaca productRoutes
 // app.use("/", productRoutes);
 // app.use("/v1/customer", productRoutes);
-app.use("/v1/auth", authRoutes);
-app.use("/v1/blog", blogRoutes);
+app.use('/v1/auth', authRoutes);
+app.use('/v1/blog', blogRoutes);
 
 // Middleware
 app.use((error, req, res, next) => {
@@ -68,11 +91,11 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect("mongodb+srv://fajar:5LMRpn8q5bwrTEn1@cluster0.z8rnr.mongodb.net/<dbname>?retryWrites=true&w=majority")
+  .connect('mongodb+srv://fajar:ZcGPaFoMAnVIwvg8@cluster0.349yq.mongodb.net/blog?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
   // kalau koneksi berhasil, menjalankan server
   .then(() => {
     // berjalan di port 4000
-    app.listen(4000, () => console.log("Koneksi sukses"));
+    app.listen(4000, () => console.log('Koneksi sukses'));
 
     // klo gagal
   })
