@@ -8,8 +8,8 @@ const blogController = require('../controllers/blog');
 router.post(
   '/post',
   [
-    body('title').isLength({ min: 5 }).withMessage('Input title miniml 5 karakter'), // Menambahkan pesan error
-    body('body').isLength({ min: 5 }).withMessage('Input title miniml 5 karakter'),
+    body('title').isLength({ min: 5 }).withMessage('Input title minimal 5 karakter'), // Menambahkan pesan error
+    body('body').isLength({ min: 5 }).withMessage('Input title minimal 5 karakter'),
   ],
   blogController.createBlogPost,
 );
@@ -18,5 +18,13 @@ router.post(
 
 router.get('/posts', blogController.getAllBlogPost);
 router.get('/post/:postId', blogController.getBlogPostById);
+router.put(
+  '/post/:postId',
+  [
+    body('title').isLength({ min: 5 }).withMessage('Input title minimal 5 karakter'), // Menambahkan pesan error
+    body('body').isLength({ min: 5 }).withMessage('Input title minimal 5 karakter'),
+  ],
+  blogController.UpdateBlogPost,
+);
 
 module.exports = router;
