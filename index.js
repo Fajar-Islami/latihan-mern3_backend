@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
+const path = require('path');
 
 const app = express();
 // Membuat router
@@ -58,6 +59,7 @@ const fileFilter = (req, file, cb) => {
 // Menambahkan middleware
 // .json karena yang diterima typenya json
 app.use(bodyParser.json());
+app.use('/images', express.static(path.join(__dirname, 'images'))); // agar pemanggilan gambar tidak error || dirname = lokasi project berada
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 
 // Penambahan CORS
