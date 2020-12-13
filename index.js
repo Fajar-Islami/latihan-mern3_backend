@@ -63,15 +63,15 @@ app.use('/images', express.static(path.join(__dirname, 'images'))); // agar pema
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 
 // Penambahan CORS
-app.use('/price', (req, res, next) => {
+app.use((req, res, next) => {
   // Izin akses origin/CORS darimana pun
-  res.setHeader('Access-Controll-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   // Method yang diizinkan
-  res.setHeader('Access-Controll-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
 
   // Header yang boleh dikirim, Content-Type(untuk JSON),Authorization (Pengiriman Token)
-  res.setHeader('Access-Controll-Allow-Headers', 'Content-Type,Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
 
